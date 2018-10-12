@@ -5,6 +5,16 @@ public class Main {
     public static void main(String[] args) {
         ProcessScheduler processScheduler = new ProcessScheduler();
 
+        Process process = new Process(1);
+        process.addInstruction(new Instruction(InstructionType.CALCULATE, 50));
+        process.addInstruction(new Instruction(InstructionType.IO, 25));
+        process.addInstruction(new Instruction(InstructionType.CALCULATE, 100));
+        process.addInstruction(new Instruction(InstructionType.YIELD));
+        process.addInstruction(new Instruction(InstructionType.CALCULATE, 25));
+        process.addInstruction(new Instruction(InstructionType.IO, 60));
+
+        processScheduler.addProcess(process);
+
         // Generate Processes
 
         // Set start time to 0
@@ -45,6 +55,15 @@ public class Main {
                 timer++;
                 currentCPUtime++;
             }
+
+            if(readyProcess != null)
+                processScheduler.addProcess(readyProcess);
+
+            if(waitingProcess != null)
+                processScheduler.addProcess(waitingProcess);
+
+            if(processScheduler.isEmpty() && readyProcess == null && waitingProcess == null)
+            	return;
         }
     }
 }

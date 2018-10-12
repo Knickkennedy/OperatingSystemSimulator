@@ -11,6 +11,17 @@ public class Process {
         this.processControlBlock = new ProcessControlBlock();
     }
 
+    public void addInstruction(Instruction instruction){
+    	this.instructions.add(instruction);
+    }
+
+    public Instruction getCurrentInstruction(){
+    	if(processControlBlock.getProgramCounter() >= instructions.size())
+    		return null;
+    	else
+    	    return instructions.get(processControlBlock.getProgramCounter());
+    }
+
     public ProcessControlBlock getProcessControlBlock(){
         return this.processControlBlock;
     }
@@ -20,14 +31,16 @@ public class Process {
     }
 
     public void run(){
-        Instruction instruction = instructions.get(processControlBlock.getProgramCounter());
+        Instruction instruction = getCurrentInstruction();
+
+        System.out.printf("Running instruction: %s with length %d left.\n", instruction.getInstructionType(), instruction.getLength());
 
         if(instruction.getLength() > 0)
             instruction.tick();
 
         if(instruction.isFinished()) {
             processControlBlock.moveProgramCounter();
-            processControlBlock.updateState(instructions.get(processControlBlock.getProgramCounter()));
+            processControlBlock.updateState(getCurrentInstruction());
         }
     }
 }

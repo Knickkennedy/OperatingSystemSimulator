@@ -22,4 +22,18 @@ public class ProcessScheduler {
     public PriorityQueue<Process> getWaitQueue() {
         return waitQueue;
     }
+
+    public void addProcess(Process process){
+    	InstructionType instructionType = process.getCurrentInstruction().getInstructionType();
+
+    	switch (instructionType){
+		    case CALCULATE: readyQueue.add(process); break;
+		    case IO:        waitQueue.add(process); break;
+		    case YIELD:     readyQueue.add(process); break;
+	    }
+    }
+
+    public boolean isEmpty(){
+    	return this.readyQueue.isEmpty() && this.waitQueue.isEmpty();
+    }
 }
