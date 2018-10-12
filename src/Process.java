@@ -3,21 +3,31 @@ import java.util.ArrayList;
 public class Process {
     private int ID;
     private ArrayList<Instruction> instructions;
+    private ProcessControlBlock processControlBlock;
 
     public Process(int ID){
         this.ID = ID;
         this.instructions = new ArrayList<Instruction>();
+        this.processControlBlock = new ProcessControlBlock();
     }
 
-    public int run(int currentInstruction){
-        Instruction instruction = instructions.get(currentInstruction);
+    public ProcessControlBlock getProcessControlBlock(){
+        return this.processControlBlock;
+    }
 
-        if(instruction.getLength() != 0)
-            instruction.updateLength(-1);
+    public void setRunningState(){
+        this.processControlBlock.setToRunning();
+    }
 
-        if(instruction.isFinished())
-            return ++currentInstruction;
-        else
-            return currentInstruction;
+    public void run(){
+        Instruction instruction = instructions.get(processControlBlock.getProgramCounter());
+
+        if(instruction.getLength() > 0)
+            instruction.tick();
+
+        if(instruction.isFinished()) {
+            processControlBlock.moveProgramCounter();
+            processControlBlock.updateState(instructions.get(processControlBlock.getProgramCounter()));
+        }
     }
 }

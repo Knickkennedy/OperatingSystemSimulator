@@ -12,16 +12,31 @@ public class Instruction {
         this.length = length;
     }
 
-    public void setInstructionType(InstructionType instructionType){ this.instructionType = instructionType; }
-    public InstructionType getInstructionType(){ return this.instructionType; }
+    public void setInstructionType(InstructionType instructionType){
+        this.instructionType = instructionType;
+    }
 
-    public void setLength(int length){ this.length = length; }
-    public int getLength(){ return this.length; }
-    public void updateLength(int update){ this.length += update; }
+    public InstructionType getInstructionType(){
+        return this.instructionType;
+    }
 
-    public boolean isFinished(){ return this.length == 0; }
+    public void setLength(int length){
+        this.length = length;
+    }
 
-    public ProcessState updateState(){
+    public int getLength(){
+        return this.length;
+    }
+
+    public boolean isFinished(){
+        return this.length < 1;
+    }
+
+    public void tick(){
+        this.length--;
+    }
+
+    public ProcessState getState(){
         switch (instructionType){
             case CALCULATE:
                 return ProcessState.READY;
