@@ -22,7 +22,10 @@ public class ProcessControlBlock {
     }
 
     public void updateState(Instruction instruction){
-        processState = instruction.getState();
+    	if(instruction == null)
+    		processState = ProcessState.TERMINATED;
+    	else
+            processState = instruction.getState();
     }
 
     public void setToRunning(){

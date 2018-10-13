@@ -48,6 +48,13 @@ public class Main {
                 // update waiting process state
 
                 // compare time quantum and determine if you move ready process
+				if(readyProcess != null && readyProcess.instructionIsFinished()){
+					readyProcess.updateProgramCounter();
+				}
+
+				if(waitingProcess != null && waitingProcess.instructionIsFinished()){
+
+				}
 
                 // move processes based on time quantum and new states
 

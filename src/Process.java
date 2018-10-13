@@ -30,6 +30,14 @@ public class Process {
         this.processControlBlock.setToRunning();
     }
 
+    public boolean instructionIsFinished(){
+	    return getCurrentInstruction().isFinished();
+    }
+
+    public void updateProgramCounter(){
+    	getProcessControlBlock().moveProgramCounter();
+    }
+
     public void run(){
         Instruction instruction = getCurrentInstruction();
 
@@ -38,9 +46,9 @@ public class Process {
         if(instruction.getLength() > 0)
             instruction.tick();
 
-        if(instruction.isFinished()) {
+        /*if(instruction.isFinished()) {
             processControlBlock.moveProgramCounter();
             processControlBlock.updateState(getCurrentInstruction());
-        }
+        }*/
     }
 }
