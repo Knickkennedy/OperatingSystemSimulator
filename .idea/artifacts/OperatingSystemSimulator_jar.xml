@@ -1,0 +1,22 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="OperatingSystemSimulator:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/OperatingSystemSimulator_jar</output-path>
+    <root id="archive" name="OperatingSystemSimulator.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/resources/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="OperatingSystemSimulator" />
+      <element id="file-copy" path="$PROJECT_DIR$/Processes/process1.xml" />
+      <element id="file-copy" path="$PROJECT_DIR$/Processes/process10.xml" />
+      <element id="file-copy" path="$PROJECT_DIR$/Processes/process2.xml" />
+      <element id="file-copy" path="$PROJECT_DIR$/Processes/process3.xml" />
+      <element id="file-copy" path="$PROJECT_DIR$/Processes/process4.xml" />
+      <element id="file-copy" path="$PROJECT_DIR$/Processes/process5.xml" />
+      <element id="file-copy" path="$PROJECT_DIR$/Processes/process6.xml" />
+      <element id="file-copy" path="$PROJECT_DIR$/Processes/process7.xml" />
+      <element id="file-copy" path="$PROJECT_DIR$/Processes/process8.xml" />
+      <element id="file-copy" path="$PROJECT_DIR$/Processes/process9.xml" />
+      <element id="dir-copy" path="$PROJECT_DIR$/src" />
+    </root>
+  </artifact>
+</component>

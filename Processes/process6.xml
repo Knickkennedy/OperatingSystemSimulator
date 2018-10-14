@@ -1,18 +1,17 @@
 <process id="6">
-	<priority>677</priority>
+	<priority>859</priority>
+	<calculate>97</calculate>
 	<yield>0</yield>
 	<yield>0</yield>
-	<io>38</io>
-	<io>67</io>
-	<yield>0</yield>
-	<calculate>92</calculate>
-	<yield>0</yield>
-	<calculate>77</calculate>
-	<io>50</io>
-	<calculate>29</calculate>
-	<calculate>85</calculate>
-	<yield>0</yield>
-	<yield>0</yield>
-	<io>31</io>
+	<io>29</io>
+	<io>18</io>
+	<calculate>36</calculate>
+	<io>62</io>
+	<calculate>81</calculate>
 	<calculate>88</calculate>
+	<io>9</io>
+	<calculate>1</calculate>
+	<yield>0</yield>
+	<yield>0</yield>
+	<calculate>64</calculate>
 </process>

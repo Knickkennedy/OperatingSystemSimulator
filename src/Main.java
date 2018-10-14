@@ -8,15 +8,20 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
         ProcessScheduler processScheduler = new ProcessScheduler();
 
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the number of processes you require.");
+        int numberOfProcesses = scanner.nextInt();
+
         // Generate Processes
 
-        /*for(int i = 1; i <= 10; i++) {
+        for(int i = 1; i <= numberOfProcesses; i++) {
             try {
                 String fileName = "Processes/process" + i + ".xml";
                 PrintWriter printWriter = new PrintWriter(fileName);
@@ -52,7 +57,7 @@ public class Main {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }*/
+        }
 
         try {
             File[] files = new File("Processes/").listFiles();
