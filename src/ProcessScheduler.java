@@ -24,13 +24,23 @@ public class ProcessScheduler {
     }
 
     public void addProcess(Process process){
-    	InstructionType instructionType = process.getCurrentInstruction().getInstructionType();
+    	InstructionType instructionType = process.getInstructionType();
 
-    	switch (instructionType){
-		    case CALCULATE: readyQueue.add(process); break;
-		    case IO:        waitQueue.add(process); break;
-		    case YIELD:     readyQueue.add(process); break;
-	    }
+    	if(instructionType != null) {
+            switch (instructionType) {
+                case CALCULATE:
+                    readyQueue.add(process);
+                    break;
+                case IO:
+                    waitQueue.add(process);
+                    break;
+                case YIELD:
+                    readyQueue.add(process);
+                    break;
+            }
+        }
+        else
+            terminateQueue.add(process);
     }
 
     public boolean isEmpty(){

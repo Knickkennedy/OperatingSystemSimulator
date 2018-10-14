@@ -11,6 +11,12 @@ public class Process {
         this.processControlBlock = new ProcessControlBlock();
     }
 
+    public Process(int ID, int priority){
+        this.ID = ID;
+        this.instructions = new ArrayList<Instruction>();
+        this.processControlBlock = new ProcessControlBlock(priority);
+    }
+
     public void addInstruction(Instruction instruction){
     	this.instructions.add(instruction);
     }
@@ -26,6 +32,10 @@ public class Process {
         return this.processControlBlock;
     }
 
+    public void setPriority(int priority){
+        processControlBlock.setPriority(priority);
+    }
+
     public void setRunningState(){
         this.processControlBlock.setToRunning();
     }
@@ -36,19 +46,28 @@ public class Process {
 
     public void updateProgramCounter(){
     	getProcessControlBlock().moveProgramCounter();
+    	getProcessControlBlock().updateState(getCurrentInstruction());
+    }
+
+    public InstructionType getInstructionType(){
+        Instruction instruction = getCurrentInstruction();
+        if(instruction != null)
+            return instruction.getInstructionType();
+        else
+            return null;
+    }
+
+    public int getPriority(){
+        return processControlBlock.getPriority();
     }
 
     public void run(){
         Instruction instruction = getCurrentInstruction();
 
-        System.out.printf("Running instruction: %s with length %d left.\n", instruction.getInstructionType(), instruction.getLength());
+        System.out.printf("Running Process: %s with priority: %d with instruction: %s with length: %d left.\n", ID, getPriority(), instruction.getInstructionType(), instruction.getLength());
 
         if(instruction.getLength() > 0)
             instruction.tick();
 
-        /*if(instruction.isFinished()) {
-            processControlBlock.moveProgramCounter();
-            processControlBlock.updateState(getCurrentInstruction());
-        }*/
     }
 }

@@ -1,0 +1,18 @@
+<process id="1">
+	<priority>697</priority>
+	<yield>0</yield>
+	<calculate>58</calculate>
+	<yield>0</yield>
+	<yield>0</yield>
+	<calculate>38</calculate>
+	<io>99</io>
+	<yield>0</yield>
+	<io>42</io>
+	<yield>0</yield>
+	<io>2</io>
+	<yield>0</yield>
+	<yield>0</yield>
+	<yield>0</yield>
+	<yield>0</yield>
+	<io>45</io>
+</process>

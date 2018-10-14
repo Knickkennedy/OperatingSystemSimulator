@@ -9,8 +9,18 @@ public class ProcessControlBlock {
         this.priority = 1;
     }
 
+    public ProcessControlBlock(int priority){
+        this.processState = ProcessState.NEW;
+        this.programCounter = 0;
+        this.priority = priority;
+    }
+
     public int getPriority(){
         return this.priority;
+    }
+
+    public void setPriority(int priority){
+        this.priority = priority;
     }
 
     public int getProgramCounter(){
