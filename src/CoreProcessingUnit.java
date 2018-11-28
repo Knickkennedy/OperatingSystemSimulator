@@ -35,11 +35,13 @@ public class CoreProcessingUnit {
 		    // process ready process
 		    if (runningProcess != null) {
 			    runningProcess.setRunningState();
+			    memoryManagementUnit.demandPages(runningProcess);
 			    runningProcess.run();
 		    }
 
 		    // process I/O process
 		    if(IoProcess != null){
+		    	memoryManagementUnit.demandPages(IoProcess);
 			    IoProcess.run();
 		    }
 

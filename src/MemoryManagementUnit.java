@@ -29,6 +29,52 @@ public class MemoryManagementUnit {
         }
     }
 
+    public void demandPages(Process process){
+    	int numberOfFramesRequired = process.getNumberOfFramesRequired();
+		ArrayList<Integer> newFrameIndexes = new ArrayList<>();
+
+		for(int i = 0; i < mainMemory.size(); i++){
+			if(mainMemory.get(i).isFree()){
+				newFrameIndexes.add(i);
+				numberOfFramesRequired--;
+			}
+
+			if(numberOfFramesRequired == 0)
+				break;
+		}
+
+		if(process.getNumberOfFramesRequired() == newFrameIndexes.size()){
+			ArrayList<Integer> newFramesToUse = new ArrayList<>();
+
+			for(Integer i : newFrameIndexes){
+				newFramesToUse.add(i);
+				mainMemory.get(i).setFree(false);
+			}
+
+			for(Integer i : process.getPages()){
+				secondaryMemory.get(i).setFree(true);
+			}
+
+			process.getProcessControlBlock().setPages(newFramesToUse);
+		}
+		else{ // Free random frames for demand paging
+			freeMainMemory(numberOfFramesRequired);
+		}
+
+    }
+
+    public void freeMainMemory(int numberOfFramesRequired){
+
+    }
+
+    public void freeSecondaryMemory(int numberOfFramesRequired){
+
+    }
+
+    public void freeCachePage(int indexToFree){
+
+    }
+
     public boolean attemptToAddToMemory(Process process){
         int numberOfFramesRequired = process.getNumberOfFramesRequired();
 
