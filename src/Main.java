@@ -13,7 +13,9 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-        ProcessScheduler processScheduler = new ProcessScheduler();
+        MemoryManagementUnit memoryManagementUnit = new MemoryManagementUnit();
+
+        RoundRobinScheduler roundRobinScheduler = new RoundRobinScheduler(memoryManagementUnit);
 
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter the number of processes you require.");
@@ -30,25 +32,44 @@ public class Main {
                 Random random = new Random();
 
                 int priority = random.nextInt(999) + 1;
+                int exponent = random.nextInt(10) + 1;
+                int size = (int)Math.pow(2, exponent);
 
+                printWriter.printf("\t<size>%d</size>\n", size);
                 printWriter.printf("\t<priority>%d</priority>\n", priority);
 
                 int numberOfInstructions = random.nextInt(15) + 5;
+                int criticalSection = random.nextInt(numberOfInstructions);
 
                 for(int j = 0; j < numberOfInstructions; j++) {
 
                     int typeOfInstruction = random.nextInt(3);
-                    int lengthOfInstruction = random.nextInt(100);
+                    int lengthOfInstruction = random.nextInt(25) + 25;
 
                     switch (typeOfInstruction) {
                         case 0:
-                            printWriter.printf("\t<calculate>%d</calculate>\n", lengthOfInstruction);
+                            if(j == criticalSection) {
+                                printWriter.printf("\t<criticalSection><calculate>%d</calculate></criticalSection>\n", lengthOfInstruction);
+                            }
+                            else{
+                                printWriter.printf("\t<calculate>%d</calculate>\n", lengthOfInstruction);
+                            }
                             break;
                         case 1:
-                            printWriter.printf("\t<io>%d</io>\n", lengthOfInstruction);
+                            if(j == criticalSection){
+                                printWriter.printf("\t<criticalSection><io>%d</io></criticalSection>\n", lengthOfInstruction);
+                            }
+                            else {
+                                printWriter.printf("\t<io>%d</io>\n", lengthOfInstruction);
+                            }
                             break;
                         case 2:
-                            printWriter.println("\t<yield>0</yield>");
+                            if(j == criticalSection){
+                                printWriter.println("\t<criticalSection><yield>0</yield></criticalSection>");
+                            }
+                            else {
+                                printWriter.println("\t<yield>0</yield>");
+                            }
                             break;
                     }
                 }
@@ -79,15 +100,32 @@ public class Main {
 
                     NodeList children = fullProcess.getChildNodes();
 
+
                     for (int i = 0; i < children.getLength(); i++) {
                         Node node = children.item(i);
-
                         if (node.getNodeType() == Node.ELEMENT_NODE) {
                             String tagName = node.getNodeName();
 
                             switch (tagName) {
                                 case "priority":
                                     process.setPriority(Integer.parseInt(node.getTextContent()));
+                                    break;
+                                case "size":
+                                    process.setSize(Integer.parseInt(node.getTextContent()));
+                                case "criticalSection":
+                                    switch (node.getChildNodes().item(0).getNodeName()){
+                                        case "calculate":
+                                            process.addInstruction(new Instruction(InstructionType.CALCULATE, Integer.parseInt(node.getTextContent()), true));
+                                            break;
+                                        case "io":
+                                            process.addInstruction(new Instruction(InstructionType.IO, Integer.parseInt(node.getTextContent()), true));
+                                            break;
+                                        case "yield":
+                                            process.addInstruction(new Instruction(InstructionType.YIELD, true));
+                                            break;
+                                    }
+
+                                    break;
                                 case "calculate":
                                     process.addInstruction(new Instruction(InstructionType.CALCULATE, Integer.parseInt(node.getTextContent())));
                                     break;
@@ -101,7 +139,7 @@ public class Main {
                         }
                     }
 
-                    processScheduler.addProcess(process);
+                    roundRobinScheduler.addProcess(process);
                 }
             }
         }
@@ -116,10 +154,10 @@ public class Main {
         // Start CPU Loop
         while(true){
             // grab process from ready queue if it's not empty
-            Process readyProcess = processScheduler.getReadyQueue().poll();
+            Process readyProcess = roundRobinScheduler.getReadyQueue().poll();
 
             // grab process from waiting queue if it's not empty
-            Process waitingProcess = processScheduler.getWaitQueue().poll();
+            Process waitingProcess = roundRobinScheduler.getIoQueue().poll();
 
             int timer = 0;
 
@@ -141,13 +179,13 @@ public class Main {
 
                 if(readyProcess != null && readyProcess.instructionIsFinished()){
 					readyProcess.updateProgramCounter();
-					processScheduler.addProcess(readyProcess);
+					roundRobinScheduler.addProcess(readyProcess);
 					readyProcess = null;
 				}
 
 				if(waitingProcess != null && waitingProcess.instructionIsFinished()){
                     waitingProcess.updateProgramCounter();
-                    processScheduler.addProcess(waitingProcess);
+                    roundRobinScheduler.addProcess(waitingProcess);
                     waitingProcess = null;
 				}
 
@@ -159,13 +197,16 @@ public class Main {
             }
 
             if(readyProcess != null)
-                processScheduler.addProcess(readyProcess);
+                roundRobinScheduler.addProcess(readyProcess);
 
             if(waitingProcess != null)
-                processScheduler.addProcess(waitingProcess);
+                roundRobinScheduler.addProcess(waitingProcess);
 
-            if(processScheduler.isEmpty() && readyProcess == null && waitingProcess == null)
-            	return;
+            if(roundRobinScheduler.isEmpty() && readyProcess == null && waitingProcess == null) {
+                System.out.printf("Round Robin with Priorities Scheduling Algorithm Took : %dms of simulated CPU time.", currentCPUtime);
+                return;
+            }
         }
+
     }
 }

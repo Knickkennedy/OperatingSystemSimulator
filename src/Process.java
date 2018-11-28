@@ -1,20 +1,28 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Process {
     private int ID;
     private ArrayList<Instruction> instructions;
     private ProcessControlBlock processControlBlock;
+    private int size;
+
 
     public Process(int ID){
         this.ID = ID;
         this.instructions = new ArrayList<Instruction>();
         this.processControlBlock = new ProcessControlBlock();
+        this.size = 0;
+
+
     }
 
-    public Process(int ID, int priority){
-        this.ID = ID;
-        this.instructions = new ArrayList<Instruction>();
-        this.processControlBlock = new ProcessControlBlock(priority);
+    public int getNumberOfFramesRequired(){
+        return this.processControlBlock.getNumberOfFramesRequired();
+    }
+
+    public ArrayList<Integer> getPages(){
+        return this.processControlBlock.getPages();
     }
 
     public void addInstruction(Instruction instruction){
@@ -59,6 +67,14 @@ public class Process {
 
     public int getPriority(){
         return processControlBlock.getPriority();
+    }
+
+    public int getSize(){
+        return this.size;
+    }
+
+    public void setSize(int size){
+        this.size = size;
     }
 
     public void run(){

@@ -1,14 +1,14 @@
 import java.util.PriorityQueue;
 
-public class ProcessScheduler {
+public class ShortestJobFirstScheduler {
     private PriorityQueue<Process> readyQueue;
     private PriorityQueue<Process> waitQueue;
     private PriorityQueue<Process> terminateQueue;
 
-    public ProcessScheduler(){
-        this.readyQueue = new PriorityQueue<Process>(25, new PriorityComparator());
-        this.waitQueue = new PriorityQueue<Process>(25, new PriorityComparator());
-        this.terminateQueue = new PriorityQueue<Process>(25, new PriorityComparator());
+    public ShortestJobFirstScheduler(){
+        this.readyQueue = new PriorityQueue<Process>(25, new SizeComparator());
+        this.waitQueue = new PriorityQueue<Process>(25, new SizeComparator());
+        this.terminateQueue = new PriorityQueue<Process>(25, new SizeComparator());
     }
 
     public PriorityQueue<Process> getReadyQueue() {
@@ -24,9 +24,9 @@ public class ProcessScheduler {
     }
 
     public void addProcess(Process process){
-    	InstructionType instructionType = process.getInstructionType();
+        InstructionType instructionType = process.getInstructionType();
 
-    	if(instructionType != null) {
+        if(instructionType != null) {
             switch (instructionType) {
                 case CALCULATE:
                     readyQueue.add(process);
@@ -44,6 +44,6 @@ public class ProcessScheduler {
     }
 
     public boolean isEmpty(){
-    	return this.readyQueue.isEmpty() && this.waitQueue.isEmpty();
+        return this.readyQueue.isEmpty() && this.waitQueue.isEmpty();
     }
 }
