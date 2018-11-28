@@ -13,12 +13,10 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-        MemoryManagementUnit memoryManagementUnit = new MemoryManagementUnit();
-
-        RoundRobinScheduler roundRobinScheduler = new RoundRobinScheduler(memoryManagementUnit);
-
+    	MemoryManagementUnit memoryManagementUnit = new MemoryManagementUnit();
+        CoreProcessingUnit firstCore = new CoreProcessingUnit(memoryManagementUnit, 25);
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter the number of processes you require.");
+        System.out.println("Enter the number of initial processes you require.");
         int numberOfProcesses = scanner.nextInt();
 
         // Generate Processes
@@ -139,7 +137,7 @@ public class Main {
                         }
                     }
 
-                    roundRobinScheduler.addProcess(process);
+                    firstCore.addProcess(process);
                 }
             }
         }
@@ -149,62 +147,15 @@ public class Main {
 
         // Set start time to 0
         int currentCPUtime = 0;
-        int timeQuantum = 25;
 
         // Start CPU Loop
         while(true){
-            // grab process from ready queue if it's not empty
-            Process readyProcess = roundRobinScheduler.getReadyQueue().poll();
+            boolean done = firstCore.run();
+            currentCPUtime++;
 
-            // grab process from waiting queue if it's not empty
-            Process waitingProcess = roundRobinScheduler.getIoQueue().poll();
-
-            int timer = 0;
-
-            while(timer < timeQuantum){
-
-                // process ready process
-                if (readyProcess != null) {
-                    readyProcess.setRunningState();
-                    readyProcess.run();
-                }
-
-                // process waiting process
-                if(waitingProcess != null){
-                    waitingProcess.run();
-                }
-
-                // compare time quantum and determine if you move ready process
-                // move processes based on time quantum and new states
-
-                if(readyProcess != null && readyProcess.instructionIsFinished()){
-					readyProcess.updateProgramCounter();
-					roundRobinScheduler.addProcess(readyProcess);
-					readyProcess = null;
-				}
-
-				if(waitingProcess != null && waitingProcess.instructionIsFinished()){
-                    waitingProcess.updateProgramCounter();
-                    roundRobinScheduler.addProcess(waitingProcess);
-                    waitingProcess = null;
-				}
-
-
-
-                // increment time
-                timer++;
-                currentCPUtime++;
-            }
-
-            if(readyProcess != null)
-                roundRobinScheduler.addProcess(readyProcess);
-
-            if(waitingProcess != null)
-                roundRobinScheduler.addProcess(waitingProcess);
-
-            if(roundRobinScheduler.isEmpty() && readyProcess == null && waitingProcess == null) {
-                System.out.printf("Round Robin with Priorities Scheduling Algorithm Took : %dms of simulated CPU time.", currentCPUtime);
-                return;
+            if(done) {
+	            System.out.printf("Round Robin with Priorities Scheduling Algorithm Took : %dms of simulated CPU time.", currentCPUtime);
+	            break;
             }
         }
 
