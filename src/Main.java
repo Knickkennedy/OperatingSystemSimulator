@@ -10,11 +10,13 @@ import java.io.PrintWriter;
 import java.util.Random;
 import java.util.Scanner;
 
+@SuppressWarnings("Duplicates")
 public class Main {
 
     public static void main(String[] args) {
     	MemoryManagementUnit memoryManagementUnit = new MemoryManagementUnit();
         CoreProcessingUnit firstCore = new CoreProcessingUnit(memoryManagementUnit, 25);
+        CoreProcessingUnit secondCore = new CoreProcessingUnit(memoryManagementUnit, 35);
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter the number of initial processes you require.");
         int numberOfProcesses = scanner.nextInt();
@@ -80,7 +82,7 @@ public class Main {
 
         try {
             File[] files = new File("Processes/").listFiles();
-
+            int fileNumber = 1;
             if (files != null) {
                 for (File file : files) {
                     DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -137,7 +139,11 @@ public class Main {
                         }
                     }
 
-                    firstCore.addProcess(process);
+                    if(fileNumber < numberOfProcesses / 2)
+                        firstCore.addProcess(process);
+                    else
+                        secondCore.addProcess(process);
+                    fileNumber++;
                 }
             }
         }
@@ -150,10 +156,11 @@ public class Main {
 
         // Start CPU Loop
         while(true){
-            boolean done = firstCore.run();
+            boolean firstDone = firstCore.run();
+            boolean secondDone = secondCore.run();
             currentCputime++;
 
-            if(done) {
+            if(firstDone && secondDone) {
 	            System.out.printf("Round Robin with Priorities Scheduling Algorithm Took : %dms of simulated CPU time.", currentCputime);
 	            break;
             }
