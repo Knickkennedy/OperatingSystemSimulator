@@ -7,6 +7,7 @@ public class ProcessControlBlock {
     private int priority;
     private int numberOfFramesRequired;
     private ArrayList<Integer> pages;
+    private int timeWaitingToRun;
 
     public ProcessControlBlock(){
         this.processState = ProcessState.NEW;
@@ -15,6 +16,16 @@ public class ProcessControlBlock {
         Random random = new Random();
         this.numberOfFramesRequired = random.nextInt(5) + 1;
         this.pages = new ArrayList<>();
+        this.timeWaitingToRun = 0;
+    }
+
+    public void updateTimeWaitingToRun(){
+        timeWaitingToRun++;
+
+        if(timeWaitingToRun > 9){
+            priority--;
+            timeWaitingToRun = 0;
+        }
     }
 
     public int getNumberOfFramesRequired(){

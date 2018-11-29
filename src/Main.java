@@ -146,15 +146,15 @@ public class Main {
         }
 
         // Set start time to 0
-        int currentCPUtime = 0;
+        int currentCputime = 0;
 
         // Start CPU Loop
         while(true){
             boolean done = firstCore.run();
-            currentCPUtime++;
+            currentCputime++;
 
             if(done) {
-	            System.out.printf("Round Robin with Priorities Scheduling Algorithm Took : %dms of simulated CPU time.", currentCPUtime);
+	            System.out.printf("Round Robin with Priorities Scheduling Algorithm Took : %dms of simulated CPU time.", currentCputime);
 	            break;
             }
         }

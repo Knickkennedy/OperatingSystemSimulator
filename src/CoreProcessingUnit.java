@@ -22,12 +22,12 @@ public class CoreProcessingUnit {
 
 	    // grab process from ready queue if it's not empty
 	    if(runningProcess == null){
-	    	runningProcess = roundRobinScheduler.getReadyQueue().poll();
+	    	runningProcess = roundRobinScheduler.pollReadyQueue();
 	    }
 
 	    // grab process from waiting queue if it's not empty
 	    if(IoProcess == null){
-	    	IoProcess = roundRobinScheduler.getIoQueue().poll();
+	    	IoProcess = roundRobinScheduler.pollIoQueue();
 	    }
 
 	    if(currentTime < timeQuantum){
@@ -35,14 +35,16 @@ public class CoreProcessingUnit {
 		    // process ready process
 		    if (runningProcess != null) {
 			    runningProcess.setRunningState();
-			    memoryManagementUnit.demandPages(runningProcess);
+			    runningProcess.getProcessControlBlock().setPages(memoryManagementUnit.demandPages(runningProcess));
 			    runningProcess.run();
+			    roundRobinScheduler.tickTimeWaitingInReadyQueue();
 		    }
 
 		    // process I/O process
 		    if(IoProcess != null){
-		    	memoryManagementUnit.demandPages(IoProcess);
+                IoProcess.getProcessControlBlock().setPages(memoryManagementUnit.demandPages(IoProcess));
 			    IoProcess.run();
+			    roundRobinScheduler.tickTimeWaitingInIoQueue();
 		    }
 
 		    // compare time quantum and determine if you move ready process
@@ -61,6 +63,7 @@ public class CoreProcessingUnit {
 		    }
 
 		    // increment time
+            roundRobinScheduler.cleanUpMemory();
 		    currentTime++;
 	    }
 	    else{

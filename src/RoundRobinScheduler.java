@@ -28,6 +28,36 @@ public class RoundRobinScheduler {
         return IoQueue;
     }
 
+    public void tickTimeWaitingInReadyQueue(){
+        for(Process process : readyQueue){
+            process.getProcessControlBlock().updateTimeWaitingToRun();
+        }
+    }
+
+    public void tickTimeWaitingInIoQueue(){
+        for(Process process : IoQueue){
+            process.getProcessControlBlock().updateTimeWaitingToRun();
+        }
+    }
+
+    public Process pollReadyQueue(){
+        return readyQueue.poll();
+    }
+
+    public Process pollIoQueue(){
+        return IoQueue.poll();
+    }
+
+    public void cleanUpMemory(){
+        for(Process process : terminateQueue){
+            memoryManagementUnit.removeFromCacheAndMainMemory(process);
+        }
+
+        Process processToAdd = waitingQueue.poll();
+        if(processToAdd != null)
+            addProcess(processToAdd);
+    }
+
     public void addProcess(Process process){
 
         if(process.getProcessControlBlock().getProcessState() == ProcessState.NEW){
@@ -41,39 +71,23 @@ public class RoundRobinScheduler {
             }
         }
         else{
+            process.getProcessControlBlock().updateState(process.getCurrentInstruction());
             performAdd(process);
         }
 
-    	/*InstructionType instructionType = process.getInstructionType();
-
-    	if(instructionType != null) {
-            switch (instructionType) {
-                case CALCULATE:
-                    readyQueue.add(process);
-                    break;
-                case IO:
-                    IoQueue.add(process);
-                    break;
-                case YIELD:
-                    readyQueue.add(process);
-                    break;
-            }
-        }
-        else
-            terminateQueue.add(process);*/
     }
 
     public void performAdd(Process process){
         if(process.getInstructionType() != null) {
-            switch (process.getInstructionType()) {
-                case CALCULATE:
+            switch (process.getProcessControlBlock().getProcessState()) {
+                case READY:
                     readyQueue.add(process);
                     break;
-                case IO:
+                case WAITING:
                     IoQueue.add(process);
                     break;
-                case YIELD:
-                    readyQueue.add(process);
+                case TERMINATED:
+                    terminateQueue.add(process);
             }
 
             process.getProcessControlBlock().updateState(process.getCurrentInstruction());
@@ -81,6 +95,6 @@ public class RoundRobinScheduler {
     }
 
     public boolean isEmpty(){
-    	return this.readyQueue.isEmpty() && this.IoQueue.isEmpty();
+    	return this.readyQueue.isEmpty() && this.IoQueue.isEmpty() && terminateQueue.isEmpty() && waitingQueue.isEmpty();
     }
 }

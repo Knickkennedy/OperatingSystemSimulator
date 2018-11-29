@@ -80,7 +80,7 @@ public class Process {
     public void run(){
         Instruction instruction = getCurrentInstruction();
 
-        //System.out.printf("Running Process: %s with priority: %d with instruction: %s with length: %d left.\n", ID, getPriority(), instruction.getInstructionType(), instruction.getLength());
+        //System.out.printf("Running Process: %s with priority: %d with instruction: %s with length: %d left. Process State: %s\n", ID, getPriority(), instruction.getInstructionType(), instruction.getLength(), getProcessControlBlock().getProcessState());
 
         if(instruction.getLength() > 0)
             instruction.tick();

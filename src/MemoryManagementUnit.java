@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 
+@SuppressWarnings("Duplicates")
 public class MemoryManagementUnit {
     private ArrayList<Frame> mainMemory;
     private ArrayList<Frame> secondaryMemory;
@@ -29,50 +30,102 @@ public class MemoryManagementUnit {
         }
     }
 
-    public void demandPages(Process process){
+    public void removeFromCacheAndMainMemory(Process process){
+        for(Integer i : process.getProcessControlBlock().getPages()){
+            freeCachePage(i);
+        }
+
+        freeMainMemory(process.getProcessControlBlock().getPages());
+    }
+
+    public ArrayList<Integer> demandPages(Process process){
     	int numberOfFramesRequired = process.getNumberOfFramesRequired();
-		ArrayList<Integer> newFrameIndexes = new ArrayList<>();
+		ArrayList<Integer> indexesOfPossibleRemovals = new ArrayList<>();
 
-		for(int i = 0; i < mainMemory.size(); i++){
-			if(mainMemory.get(i).isFree()){
-				newFrameIndexes.add(i);
-				numberOfFramesRequired--;
-			}
+		while(numberOfFramesRequired > 0){
+		    if(cacheSpaceAvailable()){
+		        numberOfFramesRequired = numberOfFramesRequired - addPageToCache();
+            }
+            else{
+		        for(int i = 0; i < mainMemory.size(); i++){
+		            if(mainMemory.get(i).isFree()){
+		                indexesOfPossibleRemovals.add(i);
+		                mainMemory.get(i).setReferenceBit(true);
+		                numberOfFramesRequired--;
+                    }
+                    else if(!mainMemory.get(i).isReferenceBit()){
+		                indexesOfPossibleRemovals.add(i);
+		                mainMemory.get(i).setReferenceBit(true);
+                    }
+                    else{
+		                mainMemory.get(i).setReferenceBit(false);
+                    }
 
-			if(numberOfFramesRequired == 0)
-				break;
-		}
+                }
+            }
+        }
 
-		if(process.getNumberOfFramesRequired() == newFrameIndexes.size()){
-			ArrayList<Integer> newFramesToUse = new ArrayList<>();
-
-			for(Integer i : newFrameIndexes){
-				newFramesToUse.add(i);
-				mainMemory.get(i).setFree(false);
-			}
-
-			for(Integer i : process.getPages()){
-				secondaryMemory.get(i).setFree(true);
-			}
-
-			process.getProcessControlBlock().setPages(newFramesToUse);
-		}
-		else{ // Free random frames for demand paging
-			freeMainMemory(numberOfFramesRequired);
-		}
-
+        freeSecondaryMemory(indexesOfPossibleRemovals);
+		return indexesOfPossibleRemovals;
     }
 
-    public void freeMainMemory(int numberOfFramesRequired){
+    public int addPageToCache(){
+        int numberAdded = 0;
+        for(int i = 0; i < cache.size(); i++){
+            if(cache.get(i).isFree()){
+                cache.get(i).setFree(false);
+                numberAdded++;
+            }
+        }
 
+        return numberAdded;
     }
 
-    public void freeSecondaryMemory(int numberOfFramesRequired){
+    public boolean cacheSpaceAvailable(){
+        boolean available = false;
+        for(Frame frame : cache){
+            if(frame.isFree()){
+                available = true;
+            }
+        }
 
+        return available;
+    }
+
+    public void freeMainMemory(ArrayList<Integer> indexesToFree){
+        for(Integer i : indexesToFree){
+            if(!mainMemory.get(i).isReferenceBit()){
+                mainMemory.get(i).setReferenceBit(true);
+            }
+            else{
+                mainMemory.get(i).setFree(true);
+                mainMemory.get(i).setReferenceBit(false);
+            }
+        }
+    }
+
+    public void freeSecondaryMemory(ArrayList<Integer> indexesToFree){
+        for(Integer i : indexesToFree){
+            if(!secondaryMemory.get(i).isReferenceBit()){
+                secondaryMemory.get(i).setReferenceBit(true);
+            }
+            else{
+                secondaryMemory.get(i).setFree(true);
+                secondaryMemory.get(i).setReferenceBit(false);
+            }
+        }
     }
 
     public void freeCachePage(int indexToFree){
-
+        if(indexToFree < cache.size()){
+            if(!cache.get(indexToFree).isReferenceBit()){
+                cache.get(indexToFree).setReferenceBit(true);
+            }
+            else{
+                cache.get(indexToFree).setFree(true);
+                cache.get(indexToFree).setReferenceBit(false);
+            }
+        }
     }
 
     public boolean attemptToAddToMemory(Process process){
