@@ -11,7 +11,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 @SuppressWarnings("Duplicates")
-public class Main {
+public class OperatingSystem {
 
     public static void main(String[] args) {
     	MemoryManagementUnit memoryManagementUnit = new MemoryManagementUnit();
@@ -139,6 +139,7 @@ public class Main {
                         }
                     }
 
+                    //firstCore.addProcess(process);
                     if(fileNumber < numberOfProcesses / 2)
                         firstCore.addProcess(process);
                     else
@@ -152,17 +153,26 @@ public class Main {
         }
 
         // Set start time to 0
-        int currentCputime = 0;
+        int currentCpuTime = 0;
 
         // Start CPU Loop
         while(true){
-            boolean firstDone = firstCore.run();
-            boolean secondDone = secondCore.run();
-            currentCputime++;
+
+            if(!firstCore.checkIfDone()) {
+                firstCore.run();
+            }
+
+            if(!secondCore.checkIfDone()) {
+                secondCore.run();
+            }
+
+            boolean firstDone = firstCore.checkIfDone();
+            boolean secondDone = secondCore.checkIfDone();
+            currentCpuTime++;
 
             if(firstDone && secondDone) {
-	            System.out.printf("Round Robin with Priorities Scheduling Algorithm Took : %dms of simulated CPU time.", currentCputime);
-	            break;
+                System.out.printf("Round Robin with Priorities Scheduling Algorithm Took : %dms of simulated CPU time.", currentCpuTime);
+                break;
             }
         }
 

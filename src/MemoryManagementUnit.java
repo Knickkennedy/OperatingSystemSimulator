@@ -14,12 +14,12 @@ public class MemoryManagementUnit {
 
         registers = new int[8];
 
-        // Main Memory consists of 512 4MB frames
+        // OperatingSystem Memory consists of 512 4MB frames
         for(int i = 0; i < 512; i++){
             mainMemory.add(new Frame());
         }
 
-        // Secondary Memory is four times as large as Main Memory
+        // Secondary Memory is four times as large as OperatingSystem Memory
         for(int i = 0; i < 2048; i++){
             secondaryMemory.add(new Frame());
         }

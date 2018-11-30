@@ -1,85 +1,75 @@
-public class CoreProcessingUnit {
+public class CoreProcessingUnit{
 
     private RoundRobinScheduler roundRobinScheduler;
     private MemoryManagementUnit memoryManagementUnit;
     private int timeQuantum;
-    private int currentTime;
-    private Process runningProcess;
-    private Process IoProcess;
+    private TestRunnable firstRunnable;
+    private Thread one;
+    private TestRunnable secondRunnable;
+    private Thread two;
+    private TestRunnable thirdRunnable;
+    private Thread three;
+    private TestRunnable fourthRunnable;
+    private Thread four;
 
     public CoreProcessingUnit(MemoryManagementUnit memoryManagementUnit, int timeQuantum){
     	this.memoryManagementUnit = memoryManagementUnit;
     	this.timeQuantum = timeQuantum;
     	this.roundRobinScheduler = new RoundRobinScheduler(memoryManagementUnit);
-    	this.currentTime = 0;
+    	firstRunnable = new TestRunnable(memoryManagementUnit, roundRobinScheduler, timeQuantum);
+        one = new Thread(firstRunnable);
+        secondRunnable = new TestRunnable(memoryManagementUnit, roundRobinScheduler, timeQuantum);
+        two = new Thread(secondRunnable);
+        thirdRunnable = new TestRunnable(memoryManagementUnit, roundRobinScheduler, timeQuantum);
+        three = new Thread(thirdRunnable);
+        fourthRunnable = new TestRunnable(memoryManagementUnit, roundRobinScheduler, timeQuantum);
+        four = new Thread(fourthRunnable);
+
     }
 
     public void addProcess(Process process){
     	this.roundRobinScheduler.addProcess(process);
     }
 
-    public boolean run(){
+    public void run(){
+        try {
 
-	    // grab process from ready queue if it's not empty
-	    if(runningProcess == null){
-	    	runningProcess = roundRobinScheduler.pollReadyQueue();
-	    }
+            if(firstRunnable.isDone()){
+                one.interrupt();
+            }
+            else{
+                one.run();
+            }
 
-	    // grab process from waiting queue if it's not empty
-	    if(IoProcess == null){
-	    	IoProcess = roundRobinScheduler.pollIoQueue();
-	    }
+            if(secondRunnable.isDone()){
+                two.interrupt();
+            }
+            else{
+                two.run();
+            }
 
-	    if(currentTime < timeQuantum){
+            if(thirdRunnable.isDone()){
+                three.interrupt();
+            }
+            else{
+                three.run();
+            }
 
-		    // process ready process
-		    if (runningProcess != null) {
-			    runningProcess.setRunningState();
-			    runningProcess.getProcessControlBlock().setPages(memoryManagementUnit.demandPages(runningProcess));
-			    runningProcess.run();
-			    roundRobinScheduler.tickTimeWaitingInReadyQueue();
-		    }
+            if(fourthRunnable.isDone()){
+                four.interrupt();
+            }
+            else{
+                four.run();
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
-		    // process I/O process
-		    if(IoProcess != null){
-                IoProcess.getProcessControlBlock().setPages(memoryManagementUnit.demandPages(IoProcess));
-			    IoProcess.run();
-			    roundRobinScheduler.tickTimeWaitingInIoQueue();
-		    }
+    public boolean checkIfDone(){
 
-		    // compare time quantum and determine if you move ready process
-		    // move processes based on time quantum and new states
-
-		    if(runningProcess != null && runningProcess.instructionIsFinished()){
-			    runningProcess.updateProgramCounter();
-			    roundRobinScheduler.addProcess(runningProcess);
-			    runningProcess = null;
-		    }
-
-		    if(IoProcess != null && IoProcess.instructionIsFinished()){
-			    IoProcess.updateProgramCounter();
-			    roundRobinScheduler.addProcess(IoProcess);
-			    IoProcess = null;
-		    }
-
-		    // increment time
-            roundRobinScheduler.cleanUpMemory();
-		    currentTime++;
-	    }
-	    else{
-		    if (runningProcess != null) {
-			    roundRobinScheduler.addProcess(runningProcess);
-			    runningProcess = null;
-		    }
-
-		    if (IoProcess != null) {
-			    roundRobinScheduler.addProcess(IoProcess);
-			    IoProcess = null;
-		    }
-
-		    currentTime = 0;
-	    }
-	    return roundRobinScheduler.isEmpty() && runningProcess == null && IoProcess == null;
+	    return roundRobinScheduler.isEmpty() && firstRunnable.isDone() && secondRunnable.isDone() && thirdRunnable.isDone() && fourthRunnable.isDone();
 
     }
 }

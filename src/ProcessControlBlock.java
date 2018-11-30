@@ -23,7 +23,10 @@ public class ProcessControlBlock {
         timeWaitingToRun++;
 
         if(timeWaitingToRun > 9){
-            priority--;
+
+            if(priority > 1)
+                priority--;
+
             timeWaitingToRun = 0;
         }
     }
