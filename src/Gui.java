@@ -32,6 +32,7 @@ public class Gui extends JFrame implements ActionListener {
 
     public Gui(String firstButtonText, String secondButtonText, String thirdButtonText, String fourthButtonText, String fifthButtonText, CoreProcessingUnit firstCore, CoreProcessingUnit secondCore, MemoryManagementUnit memoryManagementUnit, ArrayList<Process> processes){
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        setAlwaysOnTop(true);
         int x = (dimension.width - 1000) / 2;
         int y = (dimension.height - 800) / 2;
         this.setLocation(x, y);
@@ -94,6 +95,8 @@ public class Gui extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         String action = e.getActionCommand();
+
+        System.out.println(OperatingSystem.nextPID);
 
         boolean firstDone;
         boolean secondDone;
@@ -180,6 +183,8 @@ public class Gui extends JFrame implements ActionListener {
                             break;
                     }
 
+                    if(!processes.contains(process))
+                        processes.add(process);
                     firstCore.addProcess(process);
 
                     Process process1 = new Process(OperatingSystem.nextPID++);
@@ -231,6 +236,8 @@ public class Gui extends JFrame implements ActionListener {
                         }
                     }
 
+                    if(!processes.contains(process1))
+                        processes.add(process1);
                     secondCore.addProcess(process1);
                 }
                 textArea.append("Successfully added a process to each core.\n");
