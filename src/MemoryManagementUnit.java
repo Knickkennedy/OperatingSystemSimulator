@@ -6,6 +6,7 @@ public class MemoryManagementUnit {
     private ArrayList<Frame> secondaryMemory;
     private ArrayList<Frame> cache;
     private int[] registers;
+    private ArrayList<Resource> resources;
 
     public MemoryManagementUnit(){
         this.mainMemory = new ArrayList<>();
@@ -13,6 +14,8 @@ public class MemoryManagementUnit {
         this.cache = new ArrayList<>();
 
         registers = new int[8];
+
+        this.resources = new ArrayList<>();
 
         // OperatingSystem Memory consists of 512 4MB frames
         for(int i = 0; i < 512; i++){
@@ -27,6 +30,10 @@ public class MemoryManagementUnit {
         // Cache is 16MB
         for(int i = 0; i < 4; i++){
             cache.add(new Frame());
+        }
+
+        for(int i = 0; i < 8; i++){
+            resources.add(new Resource());
         }
     }
 
@@ -155,6 +162,34 @@ public class MemoryManagementUnit {
             return true;
         }
         else{
+            return false;
+        }
+
+    }
+
+    public boolean requestResources(int numberOfResourcesRequested){
+        int availableResources = 0;
+        int resourceTracker = numberOfResourcesRequested;
+
+        for(Resource resource : resources){
+            if(resource.isFree())
+                availableResources++;
+        }
+
+        if(availableResources > numberOfResourcesRequested) {
+            for (Resource resource : resources) {
+                if (resource.isFree() && resourceTracker > 0) {
+                    resource.setFree(false);
+                    resourceTracker--;
+                }
+            }
+            return true;
+        }
+        else{
+            for(Resource resource : resources){
+                resource.setFree(true);
+            }
+
             return false;
         }
 

@@ -1,3 +1,3 @@
 public enum InstructionType {
-    CALCULATE, IO, YIELD
+    CALCULATE, IO, YIELD, REQUEST;
 }

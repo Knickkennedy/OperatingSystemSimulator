@@ -58,6 +58,8 @@ public class Instruction {
                 return ProcessState.WAITING;
             case YIELD:
                 return ProcessState.READY;
+            case REQUEST:
+                return ProcessState.READY;
             default:
                 return ProcessState.TERMINATED;
         }

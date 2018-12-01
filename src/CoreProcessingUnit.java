@@ -3,26 +3,26 @@ public class CoreProcessingUnit{
     private RoundRobinScheduler roundRobinScheduler;
     private MemoryManagementUnit memoryManagementUnit;
     private int timeQuantum;
-    private TestRunnable firstRunnable;
+    private CpuTick firstRunnable;
     private Thread one;
-    private TestRunnable secondRunnable;
+    private CpuTick secondRunnable;
     private Thread two;
-    private TestRunnable thirdRunnable;
+    private CpuTick thirdRunnable;
     private Thread three;
-    private TestRunnable fourthRunnable;
+    private CpuTick fourthRunnable;
     private Thread four;
 
     public CoreProcessingUnit(MemoryManagementUnit memoryManagementUnit, int timeQuantum){
     	this.memoryManagementUnit = memoryManagementUnit;
     	this.timeQuantum = timeQuantum;
     	this.roundRobinScheduler = new RoundRobinScheduler(memoryManagementUnit);
-    	firstRunnable = new TestRunnable(memoryManagementUnit, roundRobinScheduler, timeQuantum);
+    	firstRunnable = new CpuTick(memoryManagementUnit, roundRobinScheduler, timeQuantum);
         one = new Thread(firstRunnable);
-        secondRunnable = new TestRunnable(memoryManagementUnit, roundRobinScheduler, timeQuantum);
+        secondRunnable = new CpuTick(memoryManagementUnit, roundRobinScheduler, timeQuantum);
         two = new Thread(secondRunnable);
-        thirdRunnable = new TestRunnable(memoryManagementUnit, roundRobinScheduler, timeQuantum);
+        thirdRunnable = new CpuTick(memoryManagementUnit, roundRobinScheduler, timeQuantum);
         three = new Thread(thirdRunnable);
-        fourthRunnable = new TestRunnable(memoryManagementUnit, roundRobinScheduler, timeQuantum);
+        fourthRunnable = new CpuTick(memoryManagementUnit, roundRobinScheduler, timeQuantum);
         four = new Thread(fourthRunnable);
 
     }

@@ -1,4 +1,4 @@
-public class TestRunnable implements Runnable{
+public class CpuTick implements Runnable{
 
     private RoundRobinScheduler roundRobinScheduler;
     private Process runningProcess;
@@ -8,7 +8,7 @@ public class TestRunnable implements Runnable{
     private MemoryManagementUnit memoryManagementUnit;
     private boolean done;
 
-    public TestRunnable(MemoryManagementUnit memoryManagementUnit, RoundRobinScheduler roundRobinScheduler, int timeQuantum){
+    public CpuTick(MemoryManagementUnit memoryManagementUnit, RoundRobinScheduler roundRobinScheduler, int timeQuantum){
         this.memoryManagementUnit = memoryManagementUnit;
         this.roundRobinScheduler = roundRobinScheduler;
         this.timeQuantum = timeQuantum;
@@ -33,6 +33,15 @@ public class TestRunnable implements Runnable{
             // grab process from waiting queue if it's not empty
             if (IoProcess == null) {
                 IoProcess = roundRobinScheduler.pollIoQueue();
+            }
+
+            if(runningProcess != null && runningProcess.getInstructionType() == InstructionType.REQUEST){
+                boolean success = memoryManagementUnit.requestResources(3);
+                if(!success){
+                    roundRobinScheduler.addProcess(runningProcess);
+                    runningProcess = null;
+                    System.out.println("Not Enough Resources. Returning Resources.");
+                }
             }
 
             if (currentTime < timeQuantum) {

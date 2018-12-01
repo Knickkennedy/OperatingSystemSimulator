@@ -45,7 +45,7 @@ public class OperatingSystem {
 
                 for(int j = 0; j < numberOfInstructions; j++) {
 
-                    int typeOfInstruction = random.nextInt(4);
+                    int typeOfInstruction = random.nextInt(5);
                     int lengthOfInstruction = random.nextInt(25) + 25;
 
                     switch (typeOfInstruction) {
@@ -79,6 +79,16 @@ public class OperatingSystem {
                             }
                             else{
                                 printWriter.println("\t<fork>0</fork>");
+                            }
+                            break;
+                        case 4:
+                            int roll = random.nextInt(100);
+                            if(roll < 10) {
+                                if (j == criticalSection) {
+                                    printWriter.println("\t<criticalSection><requestResources>3</requestResources></criticalSection>");
+                                } else {
+                                    printWriter.println("\t<requestResources>3</requestResources>");
+                                }
                             }
                             break;
                     }
@@ -136,6 +146,9 @@ public class OperatingSystem {
                                         case "fork":
                                             process.fork();
                                             break;
+                                        case "requestResources":
+                                            process.addInstruction(new Instruction(InstructionType.REQUEST, true));
+                                            break;
                                     }
 
                                     break;
@@ -151,11 +164,14 @@ public class OperatingSystem {
                                 case "fork":
                                     process.fork();
                                     break;
+
+                                case "requestResources":
+                                    process.addInstruction(new Instruction(InstructionType.REQUEST));
+                                    break;
                             }
                         }
                     }
 
-                    //firstCore.addProcess(process);
                     if(fileNumber < numberOfProcesses / 2)
                         firstCore.addProcess(process);
                     else
