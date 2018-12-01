@@ -28,7 +28,10 @@ public class CoreProcessingUnit{
     }
 
     public void addProcess(Process process){
-    	this.roundRobinScheduler.addProcess(process);
+    	roundRobinScheduler.addProcess(process);
+    	for(Process child : process.getChildren()){
+    	    addProcess(child);
+        }
     }
 
     public void run(){

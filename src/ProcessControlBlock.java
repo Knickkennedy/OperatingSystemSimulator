@@ -67,11 +67,13 @@ public class ProcessControlBlock {
         return this.processState;
     }
 
-    public void updateState(Instruction instruction){
+    public boolean updateState(Instruction instruction){
     	if(instruction == null)
-    		processState = ProcessState.TERMINATED;
-    	else
-            processState = instruction.getState();
+    		return true;
+    	else {
+    	    processState = instruction.getState();
+    	    return false;
+        }
     }
 
     public void setToRunning(){

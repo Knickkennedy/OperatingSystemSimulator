@@ -6,15 +6,95 @@ public class Process {
     private ArrayList<Instruction> instructions;
     private ProcessControlBlock processControlBlock;
     private int size;
-
+    private Process parent;
+    private ArrayList<Process> children;
 
     public Process(int ID){
         this.ID = ID;
         this.instructions = new ArrayList<Instruction>();
         this.processControlBlock = new ProcessControlBlock();
         this.size = 0;
+        this.children = new ArrayList<>();
+    }
 
+    public void setParent(Process parent){
+        this.parent = parent;
+    }
 
+    public Process getParent(){
+        return parent;
+    }
+
+    public ArrayList<Process> getChildren(){
+        return children;
+    }
+
+    public void fork(){
+        Random random = new Random();
+
+        Process process = new Process(OperatingSystem.nextPID++);
+
+        int priority = random.nextInt(999) + 1;
+        int exponent = random.nextInt(10) + 1;
+        int size = (int)Math.pow(2, exponent);
+
+        int numberOfInstructions = random.nextInt(15) + 5;
+        int criticalSection = random.nextInt(numberOfInstructions);
+
+        process.setPriority(priority);
+        process.setSize(size);
+
+        for(int j = 0; j < numberOfInstructions; j++) {
+
+            int typeOfInstruction = random.nextInt(4);
+            int lengthOfInstruction = random.nextInt(25) + 25;
+            switch (typeOfInstruction){
+                case 0:
+                    if(j == criticalSection){
+                        process.addInstruction(new Instruction(InstructionType.CALCULATE, lengthOfInstruction, true));
+                    }
+                    else{
+                        process.addInstruction(new Instruction(InstructionType.CALCULATE, lengthOfInstruction));
+                    }
+                    break;
+                case 1:
+                    if(j == criticalSection){
+                        process.addInstruction(new Instruction(InstructionType.IO, lengthOfInstruction, true));
+                    }
+                    else{
+                        process.addInstruction(new Instruction(InstructionType.IO, lengthOfInstruction));
+                    }
+                    break;
+                case 2:
+                    if(j == criticalSection){
+                        process.addInstruction(new Instruction(InstructionType.YIELD, lengthOfInstruction, true));
+                    }
+                    else{
+                        process.addInstruction(new Instruction(InstructionType.CALCULATE, lengthOfInstruction));
+                    }
+                    break;
+                case 3:
+                    int roll = random.nextInt(100);
+                    if(roll < 3) // our forks have a 3% chance of forking
+                        process.fork();
+                    break;
+            }
+        }
+
+        process.setParent(this);
+        children.add(process);
+    }
+
+    public void kill(){
+        for(int i = 0; i < getChildren().size(); i++){
+            abortChild(i);
+        }
+
+        processControlBlock.setProcessState(ProcessState.TERMINATED);
+    }
+
+    public void abortChild(int indexOfChildToAbort){
+        children.get(indexOfChildToAbort).kill();
     }
 
     public int getNumberOfFramesRequired(){
@@ -54,7 +134,9 @@ public class Process {
 
     public void updateProgramCounter(){
     	getProcessControlBlock().moveProgramCounter();
-    	getProcessControlBlock().updateState(getCurrentInstruction());
+    	boolean done = getProcessControlBlock().updateState(getCurrentInstruction());
+    	if(done)
+    	    kill();
     }
 
     public InstructionType getInstructionType(){

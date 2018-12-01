@@ -13,6 +13,8 @@ import java.util.Scanner;
 @SuppressWarnings("Duplicates")
 public class OperatingSystem {
 
+    public static int nextPID = 0;
+
     public static void main(String[] args) {
     	MemoryManagementUnit memoryManagementUnit = new MemoryManagementUnit();
         CoreProcessingUnit firstCore = new CoreProcessingUnit(memoryManagementUnit, 25);
@@ -20,11 +22,11 @@ public class OperatingSystem {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter the number of initial processes you require.");
         int numberOfProcesses = scanner.nextInt();
-
         // Generate Processes
 
         for(int i = 1; i <= numberOfProcesses; i++) {
             try {
+                nextPID++;
                 String fileName = "Processes/process" + i + ".xml";
                 PrintWriter printWriter = new PrintWriter(fileName);
                 printWriter.printf("<process id=\"%d\">\n", i);
@@ -43,7 +45,7 @@ public class OperatingSystem {
 
                 for(int j = 0; j < numberOfInstructions; j++) {
 
-                    int typeOfInstruction = random.nextInt(3);
+                    int typeOfInstruction = random.nextInt(4);
                     int lengthOfInstruction = random.nextInt(25) + 25;
 
                     switch (typeOfInstruction) {
@@ -69,6 +71,14 @@ public class OperatingSystem {
                             }
                             else {
                                 printWriter.println("\t<yield>0</yield>");
+                            }
+                            break;
+                        case 3:
+                            if(j == criticalSection){
+                                printWriter.println("\t<criticalSection><fork>0</fork></criticalSection>");
+                            }
+                            else{
+                                printWriter.println("\t<fork>0</fork>");
                             }
                             break;
                     }
@@ -123,6 +133,9 @@ public class OperatingSystem {
                                         case "yield":
                                             process.addInstruction(new Instruction(InstructionType.YIELD, true));
                                             break;
+                                        case "fork":
+                                            process.fork();
+                                            break;
                                     }
 
                                     break;
@@ -134,6 +147,9 @@ public class OperatingSystem {
                                     break;
                                 case "yield":
                                     process.addInstruction(new Instruction(InstructionType.YIELD));
+                                    break;
+                                case "fork":
+                                    process.fork();
                                     break;
                             }
                         }
