@@ -20,6 +20,9 @@ public class CpuTick implements Runnable{
     public void run() {
         try {
 
+            roundRobinScheduler.lockReadyQueue();
+            roundRobinScheduler.lockIoQueue();
+
             if(runningProcess == null && IoProcess == null && roundRobinScheduler.isEmpty()){
                 done = true;
                 return;
@@ -32,6 +35,7 @@ public class CpuTick implements Runnable{
 
             // grab process from waiting queue if it's not empty
             if (IoProcess == null) {
+
                 IoProcess = roundRobinScheduler.pollIoQueue();
             }
 
@@ -40,7 +44,6 @@ public class CpuTick implements Runnable{
                 if(!success){
                     roundRobinScheduler.addProcess(runningProcess);
                     runningProcess = null;
-                    System.out.println("Not Enough Resources. Returning Resources.");
                 }
             }
 
@@ -93,6 +96,8 @@ public class CpuTick implements Runnable{
                 currentTime = 0;
             }
 
+            roundRobinScheduler.unlockReadyQueue();
+            roundRobinScheduler.unlockIoQueue();
         }
         catch (Exception e){
             e.printStackTrace();

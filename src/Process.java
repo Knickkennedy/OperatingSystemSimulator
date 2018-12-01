@@ -17,6 +17,10 @@ public class Process {
         this.children = new ArrayList<>();
     }
 
+    public String toString(){
+        return String.format("ID: %d Size: %d", ID, size);
+    }
+
     public void setParent(Process parent){
         this.parent = parent;
     }
@@ -29,7 +33,7 @@ public class Process {
         return children;
     }
 
-    public void fork(){
+    public void fork(ArrayList<Process> processes){
         Random random = new Random();
 
         Process process = new Process(OperatingSystem.nextPID++);
@@ -76,11 +80,12 @@ public class Process {
                 case 3:
                     int roll = random.nextInt(100);
                     if(roll < 3) // our forks have a 3% chance of forking
-                        process.fork();
+                        process.fork(processes);
                     break;
             }
         }
 
+        processes.add(process);
         process.setParent(this);
         children.add(process);
     }
@@ -129,7 +134,10 @@ public class Process {
     }
 
     public boolean instructionIsFinished(){
-	    return getCurrentInstruction().isFinished();
+        if(getCurrentInstruction() != null)
+	        return getCurrentInstruction().isFinished();
+        else
+            return true;
     }
 
     public void updateProgramCounter(){
@@ -162,9 +170,7 @@ public class Process {
     public void run(){
         Instruction instruction = getCurrentInstruction();
 
-        //System.out.printf("Running Process: %s with priority: %d with instruction: %s with length: %d left. Process State: %s\n", ID, getPriority(), instruction.getInstructionType(), instruction.getLength(), getProcessControlBlock().getProcessState());
-
-        if(instruction.getLength() > 0)
+        if(instruction != null && instruction.getLength() > 0)
             instruction.tick();
 
     }

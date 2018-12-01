@@ -19,6 +19,10 @@ public class ProcessControlBlock {
         this.timeWaitingToRun = 0;
     }
 
+    public String toString(){
+        return String.format("Current Instruction: %d Priority: %d State: %s", programCounter, priority, processState.toString());
+    }
+
     public void updateTimeWaitingToRun(){
         timeWaitingToRun++;
 
@@ -68,8 +72,10 @@ public class ProcessControlBlock {
     }
 
     public boolean updateState(Instruction instruction){
-    	if(instruction == null)
-    		return true;
+    	if(instruction == null) {
+            processState = ProcessState.TERMINATED;
+            return true;
+        }
     	else {
     	    processState = instruction.getState();
     	    return false;
