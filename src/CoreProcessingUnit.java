@@ -1,8 +1,6 @@
 public class CoreProcessingUnit{
 
     private RoundRobinScheduler roundRobinScheduler;
-    private MemoryManagementUnit memoryManagementUnit;
-    private int timeQuantum;
     private CpuTick firstRunnable;
     private Thread one;
     private CpuTick secondRunnable;
@@ -13,8 +11,6 @@ public class CoreProcessingUnit{
     private Thread four;
 
     public CoreProcessingUnit(MemoryManagementUnit memoryManagementUnit, int timeQuantum){
-    	this.memoryManagementUnit = memoryManagementUnit;
-    	this.timeQuantum = timeQuantum;
     	this.roundRobinScheduler = new RoundRobinScheduler(memoryManagementUnit);
     	firstRunnable = new CpuTick(memoryManagementUnit, roundRobinScheduler, timeQuantum);
         one = new Thread(firstRunnable);

@@ -1,0 +1,9 @@
+<process id="24">
+	<size>512</size>
+	<priority>760</priority>
+	<calculate>43</calculate>
+	<criticalSection><calculate>28</calculate></criticalSection>
+	<io>26</io>
+	<io>26</io>
+	<calculate>37</calculate>
+</process>

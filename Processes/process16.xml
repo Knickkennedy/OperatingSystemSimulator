@@ -1,0 +1,14 @@
+<process id="16">
+	<size>16</size>
+	<priority>770</priority>
+	<yield>0</yield>
+	<fork>0</fork>
+	<fork>0</fork>
+	<io>49</io>
+	<fork>0</fork>
+	<fork>0</fork>
+	<criticalSection><yield>0</yield></criticalSection>
+	<yield>0</yield>
+	<yield>0</yield>
+	<calculate>32</calculate>
+</process>

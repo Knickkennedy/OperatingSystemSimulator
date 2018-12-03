@@ -1,0 +1,13 @@
+<process id="12">
+	<size>256</size>
+	<priority>393</priority>
+	<calculate>30</calculate>
+	<io>33</io>
+	<yield>0</yield>
+	<calculate>34</calculate>
+	<yield>0</yield>
+	<criticalSection><calculate>36</calculate></criticalSection>
+	<yield>0</yield>
+	<yield>0</yield>
+	<yield>0</yield>
+</process>

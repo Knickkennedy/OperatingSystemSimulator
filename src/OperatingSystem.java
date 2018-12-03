@@ -28,10 +28,12 @@ public class OperatingSystem {
         int numberOfProcesses = scanner.nextInt();
         // Generate Processes
 
+        new File(System.getProperty("user.dir") +"/Processes").mkdir();
+
         for(int i = 1; i <= numberOfProcesses; i++) {
             try {
                 nextPID++;
-                String fileName = "Processes/process" + i + ".xml";
+                String fileName = System.getProperty("user.dir") + "/Processes/process" + i + ".xml";
                 PrintWriter printWriter = new PrintWriter(fileName);
                 printWriter.printf("<process id=\"%d\">\n", i);
 
@@ -105,7 +107,7 @@ public class OperatingSystem {
         }
 
         try {
-            File[] files = new File("Processes/").listFiles();
+            File[] files = new File(System.getProperty("user.dir") + "/Processes/").listFiles();
             int fileNumber = 1;
             if (files != null) {
                 for (File file : files) {

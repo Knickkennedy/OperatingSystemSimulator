@@ -1,18 +1,19 @@
 <process id="2">
 	<size>128</size>
-	<priority>559</priority>
+	<priority>666</priority>
+	<io>30</io>
+	<criticalSection><fork>0</fork></criticalSection>
+	<calculate>26</calculate>
+	<calculate>29</calculate>
+	<io>41</io>
 	<yield>0</yield>
-	<calculate>41</calculate>
-	<io>42</io>
 	<yield>0</yield>
-	<yield>0</yield>
-	<io>28</io>
-	<yield>0</yield>
-	<calculate>28</calculate>
+	<calculate>30</calculate>
+	<calculate>39</calculate>
 	<calculate>31</calculate>
-	<criticalSection><calculate>47</calculate></criticalSection>
-	<calculate>34</calculate>
-	<calculate>35</calculate>
-	<yield>0</yield>
+	<fork>0</fork>
+	<calculate>48</calculate>
+	<calculate>49</calculate>
+	<fork>0</fork>
 	<yield>0</yield>
 </process>

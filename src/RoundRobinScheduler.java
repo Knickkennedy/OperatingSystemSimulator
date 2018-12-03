@@ -1,5 +1,4 @@
 import java.util.PriorityQueue;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class RoundRobinScheduler {
@@ -10,8 +9,8 @@ public class RoundRobinScheduler {
 
     private MemoryManagementUnit memoryManagementUnit;
 
-    private Lock lock1;
-    private Lock lock2;
+    private Semaphore lock1;
+    private Semaphore lock2;
 
     public RoundRobinScheduler(MemoryManagementUnit memoryManagementUnit){
         this.readyQueue = new PriorityQueue<>(25, new PriorityComparator());
@@ -19,8 +18,8 @@ public class RoundRobinScheduler {
         this.waitingQueue = new PriorityQueue<>(25, new PriorityComparator());
         this.terminateQueue = new PriorityQueue<>(25, new PriorityComparator());
         this.memoryManagementUnit = memoryManagementUnit;
-        this.lock1 = new ReentrantLock();
-        this.lock2 = new ReentrantLock();
+        this.lock1 = new Semaphore();
+        this.lock2 = new Semaphore();
     }
 
     public PriorityQueue<Process> getReadyQueue() {

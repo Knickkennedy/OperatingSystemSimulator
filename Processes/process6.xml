@@ -1,0 +1,8 @@
+<process id="6">
+	<size>4</size>
+	<priority>598</priority>
+	<calculate>29</calculate>
+	<calculate>42</calculate>
+	<yield>0</yield>
+	<fork>0</fork>
+</process>
